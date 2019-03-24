@@ -1,0 +1,88 @@
+CREATE DATABASE electric_heating CHARSET utf8;
+USE electric_heating;
+/*附件表*/
+CREATE TABLE attach(
+	id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT COMMENT '附件id',
+	file_name VARCHAR(30) NOT NULL COMMENT '文件名',
+	file_location TEXT NOT NULL COMMENT '文件位置',
+	gmt_create DATETIME NOT NULL COMMENT '创建时间'
+)ENGINE INNODB CHARSET utf8;
+
+/*用户表*/
+CREATE TABLE `user`(
+	account VARCHAR(30) PRIMARY KEY COMMENT '帐号',
+	pwd VARCHAR(30) NOT NULL COMMENT '密码',
+	nickname VARCHAR(30) NOT NULL COMMENT '昵称',
+	gender TINYINT UNSIGNED NOT NULL COMMENT '性别',
+	age TINYINT UNSIGNED NOT NULL COMMENT '年龄',
+	portrait BIGINT UNSIGNED NOT NULL COMMENT '头像',
+	phone VARCHAR(30) COMMENT '手机',
+	balance BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '余额',
+	gmt_create DATETIME NOT NULL COMMENT '注册时间',
+	CONSTRAINT fk_user_attach FOREIGN KEY(portrait) REFERENCES attach(id)
+)ENGINE INNODB CHARSET utf8;
+
+/*管理员表*/
+CREATE TABLE manager(
+	account VARCHAR(30) PRIMARY KEY COMMENT '帐号',
+	pwd VARCHAR(30) NOT NULL COMMENT '密码',
+	nickname VARCHAR(30) NOT NULL COMMENT '昵称',
+	`level` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '权限等级，默认0',
+	gmt_create DATETIME NOT NULL COMMENT '创建时间'
+)ENGINE INNODB CHARSET utf8;
+
+/*奖励表*/
+CREATE TABLE reward(
+	id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT COMMENT '奖励id',
+	money BIGINT UNSIGNED NOT NULL COMMENT '金额',
+	reason TEXT NOT NULL COMMENT '申请原因',
+	`user` VARCHAR(30) NOT NULL COMMENT '受益帐号',
+	gmt_create DATETIME NOT NULL COMMENT '创建时间',
+	is_use TINYINT UNSIGNED NOT NULL COMMENT '使用标记，0为未使用，1为使用',
+	gmt_use DATETIME NOT NULL COMMENT '使用时间',
+	CONSTRAINT fk_reward_user FOREIGN KEY(`user`) REFERENCES `user`(account)
+)ENGINE INNODB CHARSET utf8;
+
+/*未审核申请表*/
+CREATE TABLE unaudited_apply(
+	id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT COMMENT '未审核申请id',
+	content TEXT NOT NULL COMMENT '申请内容',
+	`user` VARCHAR(30) NOT NULL COMMENT '申请人',
+	gmt_apply DATETIME NOT NULL COMMENT '申请时间',
+	CONSTRAINT fk_unaudited_user FOREIGN KEY(`user`) REFERENCES `user`(account)
+)ENGINE INNODB CHARSET utf8;
+
+/*审核申请表*/
+CREATE TABLE auditing_apply(
+	id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT COMMENT '审核申请id',
+	content TEXT NOT NULL COMMENT '申请内容',
+	`user` VARCHAR(30) NOT NULL COMMENT '申请人',
+	gmt_apply DATETIME NOT NULL COMMENT '申请时间',
+	auditor VARCHAR(30) NOT NULL COMMENT '审核人',
+	is_pass TINYINT UNSIGNED NOT NULL COMMENT '通过标记，0为未通过，1为通过',
+	reason TEXT NOT NULL COMMENT '审核原因',
+	gmt_audit DATETIME NOT NULL COMMENT '审核时间',
+	CONSTRAINT fk_auditing_user FOREIGN KEY(`user`) REFERENCES `user`(account),
+	CONSTRAINT fk_auditing_manager FOREIGN KEY(auditor) REFERENCES manager(account)
+)ENGINE INNODB CHARSET utf8;
+
+/*电价区间表*/
+CREATE TABLE price_range(
+	id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT COMMENT '电价区间id',
+	content TEXT NOT NULL COMMENT '区间内容',
+	gmt_start DATETIME NOT NULL COMMENT '起始时间',
+	gmt_end DATETIME NOT NULL COMMENT '终止时间',
+	setter VARCHAR(30) NOT NULL COMMENT '设置人',
+	target TINYINT UNSIGNED NOT NULL COMMENT '区间对象，0为普通用户，1为电能供暖用户',
+	CONSTRAINT fk_range_user FOREIGN KEY(setter) REFERENCES manager(account)
+)ENGINE INNODB CHARSET utf8;
+
+/*电价变化曲线表*/
+CREATE TABLE price_curve(
+	id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT COMMENT '电价变化曲线id',
+	content TEXT NOT NULL COMMENT '曲线内容',
+	gmt_start DATETIME NOT NULL COMMENT '起始时间',
+	gmt_end DATETIME NOT NULL COMMENT '终止时间',
+	setter VARCHAR(30) NOT NULL COMMENT '设置人',
+	CONSTRAINT fk_curve_user FOREIGN KEY(setter) REFERENCES manager(account)
+)ENGINE INNODB CHARSET utf8;
