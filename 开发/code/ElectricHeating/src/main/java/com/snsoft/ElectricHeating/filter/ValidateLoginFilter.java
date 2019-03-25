@@ -43,6 +43,10 @@ public class ValidateLoginFilter implements Filter {
 			filterChain.doFilter(req, resp);
 			return;
 		}
+		if(req.getServletPath().equals("/register") && req.getMethod().equals("POST")) {
+			filterChain.doFilter(req, resp);
+			return;
+		}
 		if(req.getSession().getAttribute("loginmark") == null) {
 			resp.getWriter().write(JsonUtil.jsonResponse(null, AllConstant.CODE_ERROR, "请先登录"));
 		}else {
