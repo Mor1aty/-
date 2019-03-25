@@ -39,7 +39,7 @@ CREATE TABLE reward(
 	`user` VARCHAR(30) NOT NULL COMMENT '受益帐号',
 	gmt_create DATETIME NOT NULL COMMENT '创建时间',
 	is_use TINYINT UNSIGNED NOT NULL COMMENT '使用标记，0为未使用，1为使用',
-	gmt_use DATETIME NOT NULL COMMENT '使用时间',
+	gmt_use DATETIME COMMENT '使用时间',
 	CONSTRAINT fk_reward_user FOREIGN KEY(`user`) REFERENCES `user`(account)
 )ENGINE INNODB CHARSET utf8;
 
