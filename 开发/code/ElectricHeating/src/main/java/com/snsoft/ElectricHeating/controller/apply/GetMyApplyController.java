@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.snsoft.ElectricHeating.bean.apply.GetMyApplyBean;
 import com.snsoft.ElectricHeating.service.apply.GetMyApplyService;
 import com.snsoft.ElectricHeating.utils.AllConstant;
+import com.snsoft.ElectricHeating.utils.JWTUtil;
 import com.snsoft.ElectricHeating.utils.JsonUtil;
 
 /**
@@ -37,7 +38,7 @@ public class GetMyApplyController {
 		// 返回结果
 		String result = "";
 		try {
-			List<GetMyApplyBean> list = service.getMyApply(session.getAttribute("loginmark").toString());
+			List<GetMyApplyBean> list = service.getMyApply(JWTUtil.getPlaintextMap(request).get("account").toString());
 			if (list == null || list.isEmpty()) {
 				result = JsonUtil.jsonResponse(null, AllConstant.CODE_ERROR, "申请不存在");
 			} else {

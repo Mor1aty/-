@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.snsoft.ElectricHeating.service.apply.ApplyService;
 import com.snsoft.ElectricHeating.utils.AllConstant;
 import com.snsoft.ElectricHeating.utils.HttpUtil;
+import com.snsoft.ElectricHeating.utils.JWTUtil;
 import com.snsoft.ElectricHeating.utils.JsonUtil;
 
 /**
@@ -45,7 +46,7 @@ public class ApplyController {
 			if (!"".equals(result.trim())) {
 				return result;
 			}
-			int i = service.insertApply(params.get("content"), session.getAttribute("loginmark").toString());
+			int i = service.insertApply(params.get("content"), JWTUtil.getPlaintextMap(request).get("account").toString());
 			if(i > 0) {
 				result = JsonUtil.jsonResponse(null, AllConstant.CODE_SUCCESS, "写入成功");
 			}else {

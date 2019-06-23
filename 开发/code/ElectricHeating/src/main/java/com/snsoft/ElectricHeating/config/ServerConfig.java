@@ -6,8 +6,8 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.snsoft.ElectricHeating.filter.JWTProcessingFilter;
 import com.snsoft.ElectricHeating.filter.MoCharacterEncodingFilter;
-import com.snsoft.ElectricHeating.filter.ValidateLoginFilter;
 
 /**
  * 
@@ -34,12 +34,13 @@ public class ServerConfig {
 		return registrationBean;
 	}
 
-	// 配置 ValidateLoginFilter 过滤器
+	// 注册 JWTProcessingFilter
 	@Bean
-	public FilterRegistrationBean<ValidateLoginFilter> validateLoginFilter() {
-		FilterRegistrationBean<ValidateLoginFilter> registrationBean = new FilterRegistrationBean<ValidateLoginFilter>();
-		registrationBean.setFilter(new ValidateLoginFilter());
+	public FilterRegistrationBean<JWTProcessingFilter> myFilter1() {
+		FilterRegistrationBean<JWTProcessingFilter> registrationBean = new FilterRegistrationBean<JWTProcessingFilter>();
+		registrationBean.setFilter(new JWTProcessingFilter());
 		registrationBean.setUrlPatterns(Arrays.asList("/*"));
 		return registrationBean;
 	}
+
 }

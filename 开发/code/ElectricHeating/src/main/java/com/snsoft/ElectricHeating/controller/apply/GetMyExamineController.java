@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.snsoft.ElectricHeating.bean.apply.GetMyExamineBean;
 import com.snsoft.ElectricHeating.service.apply.GetMyExamineService;
 import com.snsoft.ElectricHeating.utils.AllConstant;
+import com.snsoft.ElectricHeating.utils.JWTUtil;
 import com.snsoft.ElectricHeating.utils.JsonUtil;
 
 /**
@@ -37,7 +38,7 @@ public class GetMyExamineController {
 		// 返回结果
 		String result = "";
 		try {
-			List<GetMyExamineBean> list = service.getMyExamine(session.getAttribute("loginmark").toString());
+			List<GetMyExamineBean> list = service.getMyExamine(JWTUtil.getPlaintextMap(request).get("account").toString());
 			if (list == null || list.isEmpty()) {
 				result = JsonUtil.jsonResponse(null, AllConstant.CODE_ERROR, "审核不存在");
 			} else {

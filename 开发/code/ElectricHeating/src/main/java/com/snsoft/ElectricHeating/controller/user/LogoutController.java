@@ -1,11 +1,13 @@
 package com.snsoft.ElectricHeating.controller.user;
 
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.snsoft.ElectricHeating.utils.AllConstant;
+import com.snsoft.ElectricHeating.utils.JWTUtil;
 import com.snsoft.ElectricHeating.utils.JsonUtil;
 
 /**
@@ -18,15 +20,14 @@ import com.snsoft.ElectricHeating.utils.JsonUtil;
  * 
  * @date 2019年3月25日下午3:43:59
  * 
- * @Description TODO 
- *	注销接口 Controller
+ * @Description TODO 注销接口 Controller
  */
 @RestController
 public class LogoutController {
-	
+
 	@GetMapping("logout")
-	public String logout(HttpSession session) {
-		session.removeAttribute("loginmark");
+	public String logout(HttpServletRequest request, HttpServletResponse response) {
+		response = JWTUtil.removeCookies(request, response);
 		return JsonUtil.jsonResponse(null, AllConstant.CODE_SUCCESS, "注销成功");
 	}
 }

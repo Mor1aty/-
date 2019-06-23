@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.snsoft.ElectricHeating.service.user.SetUserInfoService;
 import com.snsoft.ElectricHeating.utils.AllConstant;
 import com.snsoft.ElectricHeating.utils.HttpUtil;
+import com.snsoft.ElectricHeating.utils.JWTUtil;
 import com.snsoft.ElectricHeating.utils.JsonUtil;
 
 /**
@@ -46,7 +47,7 @@ public class SetUserInfoController {
 			}
 			int i = service.setUserInfo(params.get("nickname"), Integer.parseInt(params.get("gender")),
 					Integer.parseInt(params.get("age")), params.get("phone"),
-					session.getAttribute("loginmark").toString());
+					JWTUtil.getPlaintextMap(request).get("account").toString());
 			if (i > 0) {
 				result = JsonUtil.jsonResponse(null, AllConstant.CODE_SUCCESS, "修改成功");
 			} else {

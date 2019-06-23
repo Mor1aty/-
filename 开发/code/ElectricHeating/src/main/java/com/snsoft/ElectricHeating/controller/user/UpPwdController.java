@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.snsoft.ElectricHeating.service.user.UpPwdService;
 import com.snsoft.ElectricHeating.utils.AllConstant;
 import com.snsoft.ElectricHeating.utils.HttpUtil;
+import com.snsoft.ElectricHeating.utils.JWTUtil;
 import com.snsoft.ElectricHeating.utils.JsonUtil;
 
 /**
@@ -44,7 +45,7 @@ public class UpPwdController {
 			if (!"".equals(result.trim())) {
 				return result;
 			}
-			int i = service.upPwd(session.getAttribute("loginmark").toString(), params.get("oldPwd"), params.get("newPwd"));
+			int i = service.upPwd(JWTUtil.getPlaintextMap(request).get("account").toString(), params.get("oldPwd"), params.get("newPwd"));
 			if(i > 0) {
 				result = JsonUtil.jsonResponse(null, AllConstant.CODE_SUCCESS, "修改成功");
 			} else {
